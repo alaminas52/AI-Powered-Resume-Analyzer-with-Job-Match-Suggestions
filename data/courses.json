@@ -1,0 +1,10 @@
+{
+  "python": ["Python for Beginners - Coursera", "Learn Python - Udemy"],
+  "sql": ["SQL Bootcamp - Udemy"],
+  "excel": ["Excel Essentials - Coursera"],
+  "data visualization": ["Data Visualization with Tableau - Udemy"],
+  "statistics": ["Statistics for Data Science - Coursera"],
+  "git": ["Git & GitHub Crash Course - Udemy"],
+  "quickbooks": ["Mastering QuickBooks - Coursera"],
+  "problem solving": ["Problem Solving Techniques - Udemy"]
+}

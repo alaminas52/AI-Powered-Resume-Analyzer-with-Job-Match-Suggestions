@@ -1,0 +1,18 @@
+[
+  {
+    "job_title": "Junior Python Developer",
+    "required_skills": ["python", "sql", "problem solving", "git"]
+  },
+  {
+    "job_title": "Data Analyst",
+    "required_skills": ["excel", "sql", "data visualization", "statistics"]
+  },
+  {
+    "job_title": "Web Developer",
+    "required_skills": ["html", "css", "javascript", "react"]
+  },
+  {
+    "job_title": "Account Executive",
+    "required_skills": ["accounting", "excel", "quickbooks", "financial reporting"]
+  }
+]
