@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "python": ["Python for Beginners - Coursera", "Learn Python - Udemy"],
   "sql": ["SQL Bootcamp - Udemy"],
@@ -8,3 +9,15 @@
   "quickbooks": ["Mastering QuickBooks - Coursera"],
   "problem solving": ["Problem Solving Techniques - Udemy"]
 }
+=======
+{
+  "python": ["Python for Beginners - Coursera", "Learn Python - Udemy"],
+  "sql": ["SQL Bootcamp - Udemy"],
+  "excel": ["Excel Essentials - Coursera"],
+  "data visualization": ["Data Visualization with Tableau - Udemy"],
+  "statistics": ["Statistics for Data Science - Coursera"],
+  "git": ["Git & GitHub Crash Course - Udemy"],
+  "quickbooks": ["Mastering QuickBooks - Coursera"],
+  "problem solving": ["Problem Solving Techniques - Udemy"]
+}
+>>>>>>> 2bf27a8f92fec99ff4d05975ec9421706e1904ae
