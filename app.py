@@ -1,9 +1,9 @@
-
 import streamlit as st
 import fitz  # PyMuPDF
 import json
 import spacy
-
+import pandas as pd
+from io import StringIO
 
 # Load spaCy NLP model
 nlp = spacy.load("en_core_web_sm")
@@ -56,12 +56,16 @@ if uploaded_file is not None:
     resume_text = extract_text_from_pdf(uploaded_file)
     st.success("✅ Resume uploaded and processed!")
 
-    doc = nlp(resume_text)
     resume_skills = extract_skills(resume_text)
 
     st.subheader("🔍 Extracted Skills")
     st.write(", ".join(resume_skills) if resume_skills else "No skills found.")
+    st.markdown("---")
+
     st.subheader("💼 Job Match Suggestions")
+
+    # Prepare downloadable content
+    output = StringIO()
 
     for job in job_data:
         score, matched, missing = calculate_match(resume_skills, job["required_skills"])
@@ -80,16 +84,7 @@ if uploaded_file is not None:
                             st.markdown(f"- {course}")
                             shown_courses.add(course)
 
-        st.markdown("---")
-
-        
-        import pandas as pd
-    from io import StringIO
-
-    output = StringIO()
-
-    for job in job_data:
-        score, matched, missing = calculate_match(resume_skills, job["required_skills"])
+        # Add to downloadable report
         output.write(f"Job Title: {job['job_title']}\n")
         output.write(f"Match Score: {score}%\n")
         output.write(f"Matched Skills: {', '.join(matched) if matched else 'None'}\n")
@@ -101,6 +96,9 @@ if uploaded_file is not None:
                     output.write(f" - {course}\n")
         output.write("-" * 50 + "\n")
 
+        st.markdown("---")
+
+    # Download button (outside the loop)
     st.markdown("### 📥 Download Your Report")
     st.download_button(
         label="Download Report as TXT",
