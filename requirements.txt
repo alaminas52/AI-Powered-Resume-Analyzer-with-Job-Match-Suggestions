@@ -3,5 +3,4 @@ spacy==3.8.0
 PyMuPDF==1.23.7
 pandas
 
-# spaCy English model (correct install method)
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
