@@ -5,9 +5,6 @@ import json
 import spacy
 
 
-import spacy.cli
-spacy.cli.download("en_core_web_sm")
-
 # Load spaCy NLP model
 nlp = spacy.load("en_core_web_sm")
 
