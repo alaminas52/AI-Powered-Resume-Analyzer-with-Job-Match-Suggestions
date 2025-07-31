@@ -4,6 +4,10 @@ import json
 import spacy
 import pandas as pd
 from io import StringIO
+from sentence_transformers import SentenceTransformer, util
+
+# Load BERT model for sentence similarity
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 # ============================================================================
@@ -14,6 +18,20 @@ except OSError:
     download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
 # ============================================================================
+
+def estimate_proficiency(text, skill):
+    text = text.lower()
+    skill = skill.lower()
+
+    if f"advanced {skill}" in text or f"expert in {skill}" in text:
+        return "Advanced"
+    elif f"intermediate {skill}" in text or f"good in {skill}" in text:
+        return "Intermediate"
+    elif f"basic {skill}" in text or f"familiar with {skill}" in text:
+        return "Beginner"
+    else:
+        return "Uncertain"
+#============SV================================================
 
 
 # Load spaCy NLP model
@@ -58,6 +76,11 @@ def calculate_match(resume_skills, job_skills):
     return round(score, 2), matched, missing
 
 # Streamlit UI
+def semantic_match(resume_text, job_text):
+    embeddings = model.encode([resume_text, job_text], convert_to_tensor=True)
+    similarity = util.pytorch_cos_sim(embeddings[0], embeddings[1])
+    return round(float(similarity[0][0]) * 100, 2)
+
 st.markdown("<h1 style='text-align: center; color: #4CAF50;'>🤖 AI-Powered Resume Analyzer</h1>", unsafe_allow_html=True)
 st.write("Upload your resume to get matched job suggestions and learning resources.")
 
@@ -69,8 +92,14 @@ if uploaded_file is not None:
 
     resume_skills = extract_skills(resume_text)
 
-    st.subheader("🔍 Extracted Skills")
-    st.write(", ".join(resume_skills) if resume_skills else "No skills found.")
+    st.subheader("🔍 Extracted Skills with Proficiency")
+
+    if resume_skills:
+        for skill in resume_skills:
+            level = estimate_proficiency(resume_text, skill)
+            st.markdown(f"- 🛠 **{skill.title()}** — _{level}_")
+    else:
+        st.info("No skills found in your resume.")
     st.markdown("---")
 
     st.subheader("💼 Job Match Suggestions")
@@ -80,6 +109,12 @@ if uploaded_file is not None:
 
     for job in job_data:
         score, matched, missing = calculate_match(resume_skills, job["required_skills"])
+            # Semantic Matching using sentence-transformers
+        job_text = job['job_title'] + " requires skills like " + ", ".join(job["required_skills"])
+        semantic_score = util.cos_sim(
+            model.encode(resume_text, convert_to_tensor=True),
+            model.encode(job_text, convert_to_tensor=True)
+        )[0][0].item()
         st.markdown(f"**🧑‍💻 Job Title:** {job['job_title']}")
         st.markdown(f"**✅ Match Score:** {score}%")
         st.markdown(f"**🎯 Matched Skills:** {', '.join(matched) if matched else 'None'}")
@@ -94,6 +129,8 @@ if uploaded_file is not None:
                         if course not in shown_courses:
                             st.markdown(f"- {course}")
                             shown_courses.add(course)
+                            
+        st.markdown("---")
 
         # Add to downloadable report
         output.write(f"Job Title: {job['job_title']}\n")
