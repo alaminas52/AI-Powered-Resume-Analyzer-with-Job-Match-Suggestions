@@ -115,6 +115,7 @@ if uploaded_file is not None:
             model.encode(resume_text, convert_to_tensor=True),
             model.encode(job_text, convert_to_tensor=True)
         )[0][0].item()
+        st.markdown(f"**🧠 Semantic Match Score:** {round(semantic_score * 100, 2)}%")
         st.markdown(f"**🧑‍💻 Job Title:** {job['job_title']}")
         st.markdown(f"**✅ Match Score:** {score}%")
         st.markdown(f"**🎯 Matched Skills:** {', '.join(matched) if matched else 'None'}")
