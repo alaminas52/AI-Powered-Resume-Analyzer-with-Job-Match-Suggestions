@@ -124,8 +124,6 @@ Edit
 🧑‍🎓 Developed By
 Al-Amin
 
-MSc Thesis Project — AI Application in Healthcare
-Supervised by [Your Supervisor's Name]
 
 ✅ To Do / Future Improvements
 Add multilingual resume support
