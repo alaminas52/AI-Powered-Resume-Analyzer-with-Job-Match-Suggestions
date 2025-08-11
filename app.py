@@ -5,6 +5,21 @@ import spacy
 import pandas as pd
 from io import StringIO
 from sentence_transformers import SentenceTransformer, util
+from collections import Counter
+import matplotlib.pyplot as plt
+
+
+
+# Skill tips for improvement
+skill_tips = {
+    "sql": "Practice SQL queries on free platforms like LeetCode or W3Schools.",
+    "python": "Contribute to open-source or solve problems on HackerRank.",
+    "excel": "Explore advanced Excel topics like pivot tables and formulas.",
+    "statistics": "Learn basic probability, distributions, and hypothesis testing.",
+    "machine learning": "Complete beginner-friendly ML courses on Coursera or Kaggle.",
+    "html": "Build small web pages using HTML/CSS from tutorials.",
+    "git": "Learn version control basics from GitHub learning lab."
+}
 
 # Load BERT model for sentence similarity
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -74,7 +89,7 @@ def semantic_match(resume_text, job_text):
 st.markdown("<h1 style='text-align: center; color: #4CAF50;'>AI-Powered Resume Analyzer</h1>", unsafe_allow_html=True)
 st.write("Upload your resume to get matched job suggestions and learning resources.")
 
-uploaded_file = st.file_uploader("📤 Upload Resume (PDF)", type="pdf")
+uploaded_file = st.file_uploader("\U0001F4E4 Upload Resume (PDF)", type="pdf")
 
 if uploaded_file is not None:
     resume_text = extract_text_from_pdf(uploaded_file)
@@ -94,11 +109,18 @@ if uploaded_file is not None:
     st.subheader("Job Match Suggestions")
 
     output = StringIO()
+    skill_gap_counter = Counter()
+    all_missing_skills = set()
+
     output.write("Resume Analysis Report\n")
     output.write("=" * 40 + "\n\n")
 
     for job in job_data:
         score, matched, missing = calculate_match(resume_skills, job["required_skills"])
+        for skill in missing:
+            skill_gap_counter[skill] += 1
+        all_missing_skills.update(missing)
+
         job_text = job["job_title"] + " requires skills like " + ", ".join(job["required_skills"])
         semantic_score = semantic_match(resume_text, job_text)
 
@@ -143,9 +165,74 @@ if uploaded_file is not None:
 
         output.write("\n" + "-" * 40 + "\n\n")
 
+    if skill_gap_counter:
+        st.markdown("### \U0001F50D Summary Insights")
+        st.subheader("\U0001F4C9 Most Common Skill Gaps")
+        for skill, count in skill_gap_counter.most_common():
+            st.markdown(f"- **{skill.title()}** missing in {count} job(s)")
+
+        top_skills = skill_gap_counter.most_common(5)
+        skills = [s.title() for s, _ in top_skills]
+        counts = [c for _, c in top_skills]
+
+        fig2, ax2 = plt.subplots()
+        ax2.bar(skills, counts)
+        ax2.set_ylabel('Count')
+        ax2.set_title('Top Missing Skills Across Jobs')
+        st.pyplot(fig2)
+
+
+    if all_missing_skills:
+        st.subheader("\U0001F4DA Suggested Courses for All Missing Skills")
+        shown_courses = set()
+        for skill in all_missing_skills:
+            if skill in course_data:
+                for course in course_data[skill]:
+                    course_key = course["name"]
+                    if course_key not in shown_courses:
+                        st.markdown(f"- [{course['name']}]({course['url']}) — _({skill.title()})_")
+                        shown_courses.add(course_key)
+
+    
+    
+
+    # After all job loop is done
+    matched_count = sum(skill_gap_counter.values())
+    total_skills = len(resume_skills) + matched_count
+    missed_count = total_skills - matched_count
+
+    labels = ['Matched Skills', 'Missing Skills']
+    sizes = [matched_count, missed_count]
+
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures a circular pie chart.
+    st.pyplot(fig)
+
+    
     st.markdown("### Download Your Report")
+    output.write("\U0001F4C9 Skill Gap Summary:\n")
+    for skill, count in skill_gap_counter.most_common():
+        output.write(f"- {skill.title()}: Missing in {count} job(s)\n")
+    output.write("\n")
+
+    output.write("\U0001F4DA Course Suggestions (Grouped):\n")
+    for skill in all_missing_skills:
+        if skill in course_data:
+            for course in course_data[skill]:
+                output.write(f"- {course['name']}: {course['url']} ({skill.title()})\n")
+
+    st.subheader("\U0001F4DD Resume Summary")
+    st.markdown(f"**Total Skills Found:** {len(resume_skills)}")
+    st.markdown(f"**Top Missing Skills Across Jobs:** {', '.join([s.title() for s, _ in skill_gap_counter.most_common(3)])}")
+
+    st.subheader("\U0001F4A1 Skill Improvement Tips")
+    for skill in all_missing_skills:
+        if skill in skill_tips:
+            st.markdown(f"- **{skill.title()}**: {skill_tips[skill]}")
+
     st.download_button(
-        label="📄 Download Report as TXT",
+        label="\U0001F4C4 Download Report as TXT",
         data=output.getvalue().encode("utf-8"),
         file_name="resume_analysis.txt",
         mime="text/plain"
