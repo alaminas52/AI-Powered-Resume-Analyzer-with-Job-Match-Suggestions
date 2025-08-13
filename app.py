@@ -9,7 +9,6 @@ from collections import Counter
 from PIL import Image
 import base64
 import matplotlib.pyplot as plt
-from fpdf import FPDF
 from datetime import datetime
 
 try:
@@ -103,38 +102,34 @@ def create_pdf_report(content, skill_gap_counter, all_missing_skills):
     pdf = FPDF()
     pdf.add_page()
     
-    # Add header with color
-    pdf.set_fill_color(44, 62, 80)  # Dark blue
+    pdf.set_fill_color(44, 62, 80)
     pdf.rect(0, 0, 210, 30, 'F')
     pdf.set_font("Arial", 'B', 20)
-    pdf.set_text_color(255, 255, 255)  # White
+    pdf.set_text_color(255, 255, 255)
     pdf.cell(200, 10, txt="RESUME ANALYSIS REPORT", ln=1, align='C')
     
-    # Add date
     pdf.set_font("Arial", 'I', 10)
     pdf.cell(200, 10, txt=f"Generated on: {datetime.now().strftime('%B %d, %Y')}", ln=1, align='C')
     pdf.ln(15)
     
-    # Skill Gap Summary Section
     pdf.set_font("Arial", 'B', 16)
-    pdf.set_text_color(41, 128, 185)  # Blue
+    pdf.set_text_color(41, 128, 185)
     pdf.cell(200, 10, txt="SKILL GAP SUMMARY", ln=1)
     pdf.ln(5)
     
     pdf.set_font("Arial", size=12)
-    pdf.set_text_color(0, 0, 0)  # Black
+    pdf.set_text_color(0, 0, 0)
     for skill, count in skill_gap_counter.most_common():
         pdf.cell(200, 8, txt=f"- {skill.title()}: Missing in {count} job(s)", ln=1)
     pdf.ln(10)
     
-    # Suggested Courses Section
     pdf.set_font("Arial", 'B', 16)
-    pdf.set_text_color(41, 128, 185)  # Blue
+    pdf.set_text_color(41, 128, 185)
     pdf.cell(200, 10, txt="SUGGESTED COURSES", ln=1)
     pdf.ln(5)
     
     pdf.set_font("Arial", size=12)
-    pdf.set_text_color(0, 0, 0)  # Black
+    pdf.set_text_color(0, 0, 0)
     shown_courses = set()
     for skill in all_missing_skills:
         if skill in course_data:
@@ -144,20 +139,20 @@ def create_pdf_report(content, skill_gap_counter, all_missing_skills):
                     pdf.set_font("Arial", 'B', 12)
                     pdf.cell(200, 8, txt=f"- {course['name']} ({skill.title()}):", ln=1)
                     pdf.set_font("Arial", size=12)
-                    pdf.set_text_color(0, 0, 255)  # Blue for links
+                    pdf.set_text_color(0, 0, 255)
                     pdf.cell(200, 8, txt=f"  {course['url']}", ln=1)
-                    pdf.set_text_color(0, 0, 0)  # Back to black
+                    pdf.set_text_color(0, 0, 0)
                     shown_courses.add(course_key)
+        else:
+            pdf.cell(200, 8, txt=f"- No course suggestions found for {skill.title()}", ln=1)
     pdf.ln(15)
     
-    # Divider line
     pdf.set_draw_color(41, 128, 185)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(15)
     
-    # Detailed Analysis
     pdf.set_font("Arial", 'B', 16)
-    pdf.set_text_color(41, 128, 185)  # Blue
+    pdf.set_text_color(41, 128, 185)
     pdf.cell(200, 10, txt="DETAILED ANALYSIS", ln=1)
     pdf.ln(10)
     
@@ -165,10 +160,10 @@ def create_pdf_report(content, skill_gap_counter, all_missing_skills):
     for line in content.split('\n'):
         if line.startswith("Job Title:"):
             pdf.set_font("Arial", 'B', 14)
-            pdf.set_text_color(39, 174, 96)  # Green
+            pdf.set_text_color(39, 174, 96)
             pdf.cell(200, 10, txt=line, ln=1)
             pdf.set_font("Arial", size=12)
-            pdf.set_text_color(0, 0, 0)  # Black
+            pdf.set_text_color(0, 0, 0)
         elif line.startswith("Match Score:") or line.startswith("Semantic Similarity Score:"):
             pdf.set_font("Arial", 'B', 12)
             pdf.cell(200, 8, txt=line, ln=1)
@@ -176,10 +171,9 @@ def create_pdf_report(content, skill_gap_counter, all_missing_skills):
         else:
             pdf.cell(200, 8, txt=line, ln=1)
     
-    # Add footer
     pdf.set_y(-15)
     pdf.set_font('Arial', 'I', 8)
-    pdf.set_text_color(100, 100, 100)  # Gray
+    pdf.set_text_color(100, 100, 100)
     pdf.cell(0, 10, 'Created by Al-Amin | GitHub: https://github.com/alaminas52/AI-Powered-Resume-Analyzer-with-Job-Match-Suggestions', 0, 0, 'C')
     
     return pdf.output(dest='S').encode('latin1')
@@ -189,10 +183,9 @@ def get_base64_of_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-banner_base64 = get_base64_of_image("banner.png")  # Your banner image
-logo_base64 = get_base64_of_image("logo.png")      # Your AI logo image
+banner_base64 = get_base64_of_image("banner.png")
+logo_base64 = get_base64_of_image("logo.png")
 
-# Display Banner with Logo and Title
 st.markdown(
     f"""
     <div style="
@@ -213,7 +206,6 @@ st.markdown(
 
 st.write("Upload your resume to get matched job suggestions and learning resources.")
 
-# File uploader
 uploaded_file = st.file_uploader("📤 Upload Resume (PDF)", type="pdf")
 
 if uploaded_file is not None:
@@ -222,7 +214,7 @@ if uploaded_file is not None:
 
     resume_skills = extract_skills(resume_text)
 
-    st.subheader("Extracted Skills with Proficiency")
+    st.subheader("🔍 Extracted Skills with Proficiency")
     if resume_skills:
         for skill in resume_skills:
             level = estimate_proficiency(resume_text, skill)
@@ -231,7 +223,7 @@ if uploaded_file is not None:
         st.info("No skills found in your resume.")
     st.markdown("---")
 
-    st.subheader("Job Match Suggestions")
+    st.subheader("💼 Job Match Suggestions")
 
     output = StringIO()
     skill_gap_counter = Counter()
@@ -249,14 +241,14 @@ if uploaded_file is not None:
         job_text = job["job_title"] + " requires skills like " + ", ".join(job["required_skills"])
         semantic_score = semantic_match(resume_text, job_text)
 
-        st.markdown(f"**Job Title:** {job['job_title']}")
-        st.markdown(f"**Match Score:** {score}%")
-        st.markdown(f"**Semantic Similarity Score:** {semantic_score}%")
-        st.markdown(f"**Matched Skills:** {', '.join(matched) if matched else 'None'}")
-        st.markdown(f"**Missing Skills:** {', '.join(missing) if missing else 'None'}")
+        st.markdown(f"**🏷 Job Title:** {job['job_title']}")
+        st.markdown(f"**📊 Match Score:** {score}%")
+        st.markdown(f"**🤝 Semantic Similarity Score:** {semantic_score}%")
+        st.markdown(f"**✅ Matched Skills:** {', '.join(matched) if matched else 'None'}")
+        st.markdown(f"**❌ Missing Skills:** {', '.join(missing) if missing else 'None'}")
 
         if missing:
-            st.markdown("**Suggested Courses:**")
+            st.markdown("**📚 Suggested Courses:**")
             shown_courses = set()
             for skill in missing:
                 if skill in course_data:
@@ -266,7 +258,7 @@ if uploaded_file is not None:
                             st.markdown(f"- [{course['name']}]({course['url']}) — _({skill.title()})_")
                             shown_courses.add(course_key)
                 else:
-                    st.markdown(f"- No courses found for: {skill}")
+                    st.markdown(f"- No course suggestions found for: {skill}")
 
         st.markdown("---")
 
@@ -291,14 +283,14 @@ if uploaded_file is not None:
                     for course in course_data[skill]:
                         output.write(f"- {course['name']}: {course['url']}\n")
                 else:
-                    output.write(f"- No courses found for: {skill}\n")
+                    output.write(f"- No course suggestions found for: {skill}\n")
 
         output.write("\n" + "-" * 50 + "\n\n")
 
     # Summary
     if skill_gap_counter:
-        st.markdown("### 🔍 Summary Insights")
-        st.subheader("📉 Most Common Skill Gaps")
+        st.markdown("### 📉 Summary Insights")
+        st.subheader("📌 Most Common Skill Gaps")
         for skill, count in skill_gap_counter.most_common():
             st.markdown(f"- **{skill.title()}**: Missing in {count} job(s)")
 
@@ -313,14 +305,13 @@ if uploaded_file is not None:
                         st.markdown(f"- [{course['name']}]({course['url']}) — _({skill.title()})_")
                         shown_courses.add(course_key)
             else:
-                st.markdown(f"- No courses found for: {skill}")
+                st.markdown(f"- No course suggestions found for: {skill}")
 
     # Skill Match Visualization
     st.markdown("### 📊 Skill Match Visualization")
     col1, col2 = st.columns(2)
     
     with col1:
-        # Pie chart
         if all_missing_skills or resume_skills:
             labels = ["Matched Skills", "Missing Skills"]
             sizes = [len(resume_skills), len(all_missing_skills)]
@@ -331,7 +322,6 @@ if uploaded_file is not None:
             st.pyplot(fig1)
     
     with col2:
-        # Bar chart
         if skill_gap_counter:
             fig2, ax2 = plt.subplots()
             skills, counts = zip(*skill_gap_counter.most_common())
@@ -339,18 +329,15 @@ if uploaded_file is not None:
             ax2.set_ylabel('Count')
             ax2.set_title('Top Missing Skills Across Jobs')
             plt.xticks(rotation=45)
-            
-            # Add value labels on top of bars
             for bar in bars:
                 height = bar.get_height()
                 ax2.text(bar.get_x() + bar.get_width()/2., height,
                         f'{height}',
                         ha='center', va='bottom')
-            
             st.pyplot(fig2)
 
     # Report Download
-    st.markdown("### Download Your Report")
+    st.markdown("### 📥 Download Your Report")
     col1, col2 = st.columns(2)
     
     with col1:
