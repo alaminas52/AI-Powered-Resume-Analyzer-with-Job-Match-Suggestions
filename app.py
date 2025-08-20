@@ -10,6 +10,7 @@ from PIL import Image
 import base64
 import matplotlib.pyplot as plt
 from datetime import datetime
+import time
 
 try:
     from fpdf import FPDF
@@ -209,10 +210,40 @@ st.write("Upload your resume to get matched job suggestions and learning resourc
 uploaded_file = st.file_uploader("📤 Upload Resume (PDF)", type="pdf")
 
 if uploaded_file is not None:
-    resume_text = extract_text_from_pdf(uploaded_file)
+    # Show loading animation
+    with st.spinner('Analyzing your resume...'):
+        # Progress bar
+        progress_bar = st.progress(0)
+        
+        # Status text
+        status_text = st.empty()
+        
+        # Simulate processing steps
+        for percent_complete in range(0, 101, 10):
+            time.sleep(0.2)
+            progress_bar.progress(percent_complete)
+            status_text.text(f"Processing... {percent_complete}% complete")
+        
+        # Extract text
+        status_text.text("Extracting text from PDF...")
+        resume_text = extract_text_from_pdf(uploaded_file)
+        time.sleep(0.5)
+        
+        # Extract skills
+        status_text.text("Identifying skills...")
+        resume_skills = extract_skills(resume_text)
+        time.sleep(0.5)
+        
+        # Complete processing
+        progress_bar.progress(100)
+        status_text.text("Analysis complete!")
+        time.sleep(0.5)
+        
+    # Clear loading elements
+    progress_bar.empty()
+    status_text.empty()
+    
     st.success("Resume uploaded and processed!")
-
-    resume_skills = extract_skills(resume_text)
 
     st.subheader("🔍 Extracted Skills with Proficiency")
     if resume_skills:
@@ -336,7 +367,8 @@ if uploaded_file is not None:
                         ha='center', va='bottom')
             st.pyplot(fig2)
 
-    # Report Download
+
+ # Report Download
     st.markdown("### 📥 Download Your Report")
     col1, col2 = st.columns(2)
     
@@ -360,6 +392,38 @@ if uploaded_file is not None:
         else:
             st.button("📑 PDF Download (Unavailable)", disabled=True)
             st.info("Install fpdf with: pip install fpdf")
+
+    # --- NEW SECTION: Top Job Recommendation ---
+    st.markdown("## 🏆 Top Job Recommendation")
+
+    best_job = None
+    best_score = -1
+    best_semantic = -1
+
+    for job in job_data:
+        score, matched, missing = calculate_match(resume_skills, job["required_skills"])
+        job_text = job["job_title"] + " requires skills like " + ", ".join(job["required_skills"])
+        semantic_score = semantic_match(resume_text, job_text)
+
+        if score > best_score or (score == best_score and semantic_score > best_semantic):
+            best_job = {
+                "title": job["job_title"],
+                "score": score,
+                "semantic": semantic_score,
+                "matched": matched,
+                "missing": missing
+            }
+            best_score = score
+            best_semantic = semantic_score
+
+    if best_job:
+        st.success(f"**Best Fit: {best_job['title']}** 🎯")
+        st.markdown(f"- **Match Score:** {best_job['score']}%")
+        st.markdown(f"- **Semantic Similarity:** {best_job['semantic']}%")
+        st.markdown(f"- **Matched Skills:** {', '.join(best_job['matched']) if best_job['matched'] else 'None'}")
+        st.markdown(f"- **Missing Skills:** {', '.join(best_job['missing']) if best_job['missing'] else 'None'}")
+    else:
+        st.warning("No suitable job match found.")
 
 # Footer
 st.markdown(
