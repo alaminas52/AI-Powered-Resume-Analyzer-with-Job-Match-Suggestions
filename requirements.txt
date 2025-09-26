@@ -2,3 +2,8 @@ streamlit
 spacy==3.8.0
 pymupdf==1.23.7
 pandas
+sentence-transformers
+matplotlib
+reportlab
+Pillow
+requests
