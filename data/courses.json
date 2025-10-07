@@ -1,0 +1,51 @@
+{
+  "python": [
+    { "name": "Python for Beginners - Coursera", "url": "https://www.coursera.org/courses?query=python&productDifficultyLevel=Beginner" },
+    { "name": "Learn Python - Udemy", "url": "https://www.udemy.com/course/learn-python/" }
+  ],
+  "sql": [
+    { "name": "SQL Bootcamp - Udemy", "url": "https://www.udemy.com/course/the-complete-sql-bootcamp/" }
+  ],
+  "excel": [
+    { "name": "Excel Essentials - Coursera", "url": "https://www.coursera.org/learn/excel-essentials" }
+  ],
+  "data visualization": [
+    { "name": "Data Visualization with Tableau - Udemy", "url": "https://www.udemy.com/course/tableau-data-visualization/" }
+  ],
+  "statistics": [
+    { "name": "Statistics for Data Science - Coursera", "url": "https://www.coursera.org/learn/statistics-for-data-science" }
+  ],
+  "git": [
+    { "name": "Git & GitHub Crash Course - Udemy", "url": "https://www.udemy.com/course/git-and-github-crash-course/" }
+  ],
+  "quickbooks": [
+    { "name": "Mastering QuickBooks - Coursera", "url": "https://www.coursera.org/professional-certificates/intuit-bookkeeping" }
+  ],
+  "problem solving": [
+    { "name": "Problem Solving Techniques - Udemy", "url": "https://www.udemy.com/course/problem-solving-techniques-n/" }
+  ],
+  "accounting": [
+    { "name": "Financial Accounting Fundamentals - Coursera", "url": "https://www.coursera.org/learn/wharton-accounting" },
+    { "name": "Introduction to Accounting - Acumen Academy", "url": "https://acumenacademy.org/course/financial-statements-101/?" }
+  ],
+  "financial reporting": [
+    { "name": "Financial Reporting Specialization - Coursera", "url": "https://www.coursera.org/specializations/financial-reporting" },
+    { "name": "Corporate Financial Reporting - edX", "url": "https://www.edx.org/learn/corporate-finance" }
+  ],
+  "html": [
+    { "name": "HTML for Beginners - Coursera", "url": "https://www.coursera.org/learn/html-css-javascript-for-web-developers" },
+    { "name": "Learn HTML - FreeCodeCamp", "url": "https://www.freecodecamp.org/learn/responsive-web-design/" }
+  ],
+  "css": [
+    { "name": "CSS Fundamentals - Udemy", "url": "https://www.udemy.com/topic/css//" },
+    { "name": "CSS Basics - FreeCodeCamp", "url": "https://www.freecodecamp.org/learn/responsive-web-design/" }
+  ],
+  "javascript": [
+    { "name": "JavaScript Essentials - Udemy", "url": "https://www.udemy.com/course/the-complete-javascript-course/" },
+    { "name": "JavaScript Basics - FreeCodeCamp", "url": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" }
+  ],
+  "react": [
+    { "name": "React for Beginners - Udemy", "url": "https://www.udemy.com/course/react-guide-for-beginners/" },
+    { "name": "React Basics - Coursera", "url": "https://www.coursera.org/learn/react-basics" }
+  ]
+}
